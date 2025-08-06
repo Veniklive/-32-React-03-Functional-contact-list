@@ -1,0 +1,39 @@
+form 
+  display: flex
+  flex-direction: column
+
+.containerInputs 
+  display: flex
+  flex-direction: column
+  gap: 10px
+  input 
+    flex: 1 1 auto
+    font-size: larger
+    position: relative
+    width: 100%
+    z-index: 1
+    padding: 0.3em 1.3em 0.3em 0.3em
+  span 
+    position: absolute
+    right: 5px
+    z-index: 2
+    padding: 0.3em
+    cursor: pointer
+  > div
+    display: flex
+    position: relative
+
+
+.containerButtons 
+  position: relative
+  display: flex
+  margin-top: auto
+  gap: 50%
+  button
+    font-size: large
+    margin: 0 20px 20px 20px
+  > button
+    position: absolute
+    left: -50%
+    transform: translateX(-50%)
+    margin-left: 0
