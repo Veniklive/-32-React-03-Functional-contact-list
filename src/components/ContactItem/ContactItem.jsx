@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import style from "./ContactItem.module.sass";
+import React, { Component } from 'react';
+import style from './ContactItem.module.sass';
 
-function ContactItem({ onDelete, onChoice, contact, contactEditId }) {
-  const onContactDelete = (event) => {
+function ContactItem ({ onDelete, onChoice, contact, contactEditId }) {
+  const onContactDelete = event => {
     event.stopPropagation();
     onDelete(contact.id);
   };
@@ -12,8 +12,8 @@ function ContactItem({ onDelete, onChoice, contact, contactEditId }) {
       onDoubleClick={() => onChoice(contact.id)}
       className={
         style.containerContactItem +
-        " " +
-        (contactEditId == contact.id ? style.edit : "")
+        ' ' +
+        (contactEditId == contact.id ? style.edit : '')
       }
     >
       <p>

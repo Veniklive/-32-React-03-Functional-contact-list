@@ -1,59 +1,59 @@
-import { useState, useEffect } from "react";
-import style from "./ContactForm.module.sass";
-import { nanoid } from "nanoid";
-import PropTypes from "prop-types";
+import { useState, useEffect } from 'react';
+import style from './ContactForm.module.sass';
+import { nanoid } from 'nanoid';
+import PropTypes from 'prop-types';
 
-function ContactForm({ onSubmit, contact, onDelete, onNew }) {
+function ContactForm ({ onSubmit, contact, onDelete, onNew }) {
   const [inputContact, setInputContact] = useState({
-    id: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
   });
 
   const resetState = () => {
     setInputContact({
-      id: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
+      id: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
     });
   };
 
-  const onInputChange = (event) => {
+  const onInputChange = event => {
     setInputContact({
       ...inputContact,
       [event.target.name]: event.target.value,
     });
   };
 
-  const onInputPressClear = (event) => {
+  const onInputPressClear = event => {
     setInputContact({
       ...inputContact,
-      [event.target.getAttribute("name")]: "",
+      [event.target.getAttribute('name')]: '',
     });
   };
 
-  const onFormSubmit = (event) => {
+  const onFormSubmit = event => {
     event.preventDefault();
     onSubmit({
       ...inputContact,
-      id: inputContact.id === "" ? nanoid() : inputContact.id,
+      id: inputContact.id === '' ? nanoid() : inputContact.id,
     });
-    if (contact.id === "") {
+    if (contact.id === '') {
       resetState();
     }
   };
 
-  const onClickNew = (event) => {
+  const onClickNew = event => {
     event.stopPropagation();
     onNew();
     resetState();
   };
 
-  const onDeleteInEdit = (event) => {
+  const onDeleteInEdit = event => {
     event.stopPropagation();
     onDelete(inputContact.id);
     resetState();
@@ -71,67 +71,67 @@ function ContactForm({ onSubmit, contact, onDelete, onNew }) {
         <div className={style.containerInputs}>
           <div>
             <input
-              placeholder="First name"
-              name="firstName"
-              type="text"
+              placeholder='First name'
+              name='firstName'
+              type='text'
               required
               value={inputContact.firstName}
               onChange={onInputChange}
             />
-            <span name="firstName" onClick={onInputPressClear}>
+            <span name='firstName' onClick={onInputPressClear}>
               X
             </span>
           </div>
 
           <div>
             <input
-              placeholder="Last name"
-              name="lastName"
-              type="text"
+              placeholder='Last name'
+              name='lastName'
+              type='text'
               required
               value={inputContact.lastName}
               onChange={onInputChange}
             />
-            <span name="lastName" onClick={onInputPressClear}>
+            <span name='lastName' onClick={onInputPressClear}>
               X
             </span>
           </div>
           <div>
             <input
-              placeholder="Email"
-              name="email"
-              type="email"
+              placeholder='Email'
+              name='email'
+              type='email'
               required
               value={inputContact.email}
               onChange={onInputChange}
             />
-            <span name="email" onClick={onInputPressClear}>
+            <span name='email' onClick={onInputPressClear}>
               X
             </span>
           </div>
           <div>
             <input
-              placeholder="Phone"
-              name="phone"
-              type="tel"
+              placeholder='Phone'
+              name='phone'
+              type='tel'
               required
               value={inputContact.phone}
               onChange={onInputChange}
             />
-            <span name="phone" onClick={onInputPressClear}>
+            <span name='phone' onClick={onInputPressClear}>
               X
             </span>
           </div>
         </div>
 
         <div className={style.containerButtons}>
-          <button type="button" onClick={onClickNew}>
+          <button type='button' onClick={onClickNew}>
             New
           </button>
           <div>
             <button>Save</button>
-            {inputContact.id !== "" && (
-              <button type="button" onClick={onDeleteInEdit}>
+            {inputContact.id !== '' && (
+              <button type='button' onClick={onDeleteInEdit}>
                 Delete
               </button>
             )}

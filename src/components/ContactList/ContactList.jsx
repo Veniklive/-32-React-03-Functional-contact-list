@@ -1,12 +1,12 @@
-import ContactItem from "../ContactItem/ContactItem";
-import style from "./ContactList.module.sass";
-import PropTypes from "prop-types";
+import ContactItem from '../ContactItem/ContactItem';
+import style from './ContactList.module.sass';
+import PropTypes from 'prop-types';
 
-function ContactList({ contacts, contactEditId, onChoice, onDelete }) {
+function ContactList ({ contacts, contactEditId, onChoice, onDelete }) {
   return (
     <>
       <ul className={style.containerContacts}>
-        {contacts.map((contact) => {
+        {contacts.map(contact => {
           return (
             <ContactItem
               contactEditId={contactEditId}
