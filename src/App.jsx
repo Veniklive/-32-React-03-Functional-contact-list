@@ -57,9 +57,7 @@ function App() {
   };
 
   const getContact = () => {
-    const contact = contacts.filter(
-      (contact) => contact.id === contactEditId
-    )[0];
+    const contact = contacts.find((contact) => contact.id === contactEditId);
     if (contact) {
       return contact;
     } else {
