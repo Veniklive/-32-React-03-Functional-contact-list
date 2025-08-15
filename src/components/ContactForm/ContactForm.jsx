@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import style from './ContactForm.module.sass';
-import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
 
 function ContactForm ({ onSubmit, contact, onDelete, onNew }) {
   const [inputContact, setInputContact] = useState({
-    id: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -14,7 +12,6 @@ function ContactForm ({ onSubmit, contact, onDelete, onNew }) {
 
   const resetState = () => {
     setInputContact({
-      id: '',
       firstName: '',
       lastName: '',
       email: '',
@@ -38,11 +35,8 @@ function ContactForm ({ onSubmit, contact, onDelete, onNew }) {
 
   const onFormSubmit = event => {
     event.preventDefault();
-    onSubmit({
-      ...inputContact,
-      id: inputContact.id === '' ? nanoid() : inputContact.id,
-    });
-    if (contact.id === '') {
+    onSubmit(inputContact);
+    if (!inputContact.id) {
       resetState();
     }
   };
@@ -130,7 +124,7 @@ function ContactForm ({ onSubmit, contact, onDelete, onNew }) {
           </button>
           <div>
             <button>Save</button>
-            {inputContact.id !== '' && (
+            {inputContact.id && (
               <button type='button' onClick={onDeleteInEdit}>
                 Delete
               </button>

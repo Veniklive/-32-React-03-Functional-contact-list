@@ -1,20 +1,22 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ContactForm from './components/ContactForm/ContactForm.jsx';
 import style from './App.module.sass';
 
 import ContactList from './components/ContactList/ContactList';
+import api from './api/movie-service.js';
 
 function App () {
   const [contactEditId, setContactEditId] = useState('');
   const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
-    const localStorageContacts = JSON.parse(localStorage.getItem('contacts'));
-    if (!localStorageContacts) {
-      setContacts([]);
-    } else {
-      setContacts(localStorageContacts);
-    }
+    api.get('/').then(({ data }) => {
+      if (!data) {
+        setContacts([]);
+      } else {
+        setContacts(data);
+      }
+    });
   }, []);
 
   const changeOperationModeToAddition = () => {
@@ -26,32 +28,29 @@ function App () {
   };
 
   const saveContact = contact => {
-    setContacts(prevContacts => {
-      let updatedContacts;
-      if (contactEditId === '') {
-        updatedContacts = [...prevContacts, contact];
-      } else {
-        updatedContacts = prevContacts.map(item =>
-          item.id === contact.id ? contact : item
+    if (contactEditId === '') {
+      api.post('/', contact).then(({ data }) => {
+        setContacts(prevContacts => [...prevContacts, data]);
+      });
+    } else {
+      api.put(`/${contact.id}`, contact).then(({ data }) => {
+        setContacts(prevContacts =>
+          prevContacts.map(item => (item.id === data.id ? data : item))
         );
-      }
-      saveContactsInLocalStorage(updatedContacts);
-      return updatedContacts;
-    });
-    setContactEditId('');
+      });
+    }
   };
 
   const deleteContact = id => {
-    setContacts(prevContacts => {
-      const updatedContacts = prevContacts.filter(contact => contact.id !== id);
-      saveContactsInLocalStorage(updatedContacts);
-      return updatedContacts;
-    });
-    setContactEditId('');
-  };
-
-  const saveContactsInLocalStorage = newState => {
-    localStorage.setItem(`contacts`, JSON.stringify(newState));
+    api
+      .delete(`/${id}`)
+      .then(() => {
+        setContacts(contacts.filter(contact => contact.id !== id));
+        if (contactEditId === id) {
+          setContactEditId('');
+        }
+      })
+      .catch(error => console.error(error));
   };
 
   const getContact = () => {
@@ -60,7 +59,6 @@ function App () {
       return contact;
     } else {
       return {
-        id: '',
         firstName: '',
         lastName: '',
         email: '',
