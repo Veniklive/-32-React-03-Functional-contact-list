@@ -1,15 +1,23 @@
-import React, { Component } from 'react';
 import style from './ContactItem.module.sass';
+import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import {
+  deleteContact,
+  choiceToEdit,
+} from '../../store/actions/contactsActions';
+import api from '../../api/movie-service';
 
-function ContactItem ({ onDelete, onChoice, contact, contactEditId }) {
+function ContactItem ({ contact, contactEditId, deleteContact, choiceToEdit }) {
+  const dispatch = useDispatch();
   const onContactDelete = event => {
     event.stopPropagation();
-    onDelete(contact.id);
+    api.delete(`/contacts/${contact.id}`).catch(error => console.error(error));
+    dispatch(deleteContact(contact.id));
   };
 
   return (
     <li
-      onDoubleClick={() => onChoice(contact.id)}
+      onDoubleClick={() => choiceToEdit(contact.id)}
       className={
         style.containerContactItem +
         ' ' +
@@ -24,4 +32,12 @@ function ContactItem ({ onDelete, onChoice, contact, contactEditId }) {
   );
 }
 
-export default ContactItem;
+function mapStateToProps (state) {
+  return {
+    contactEditId: state.contactEditId,
+  };
+}
+
+const mapDispatchToProps = { choiceToEdit, deleteContact };
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactItem);

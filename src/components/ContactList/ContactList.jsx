@@ -2,20 +2,26 @@ import ContactItem from '../ContactItem/ContactItem';
 import style from './ContactList.module.sass';
 import PropTypes from 'prop-types';
 
-function ContactList ({ contacts, contactEditId, onChoice, onDelete }) {
+import { connect } from 'react-redux';
+import api from '../../api/movie-service';
+import { useEffect } from 'react';
+import { getContacts } from '../../store/actions/contactsActions';
+
+function ContactList ({ contacts, getContacts }) {
+  useEffect(() => {
+    api
+      .get('/contacts')
+      .then(({ data }) => {
+        getContacts(data);
+      })
+      .catch(error => console.error(error));
+  }, []);
+
   return (
     <>
       <ul className={style.containerContacts}>
         {contacts.map(contact => {
-          return (
-            <ContactItem
-              contactEditId={contactEditId}
-              key={contact.id}
-              contact={contact}
-              onChoice={onChoice}
-              onDelete={onDelete}
-            />
-          );
+          return <ContactItem key={contact.id} contact={contact} />;
         })}
       </ul>
     </>
@@ -38,4 +44,14 @@ ContactList.defaultProps = {
   contacts: [],
 };
 
-export default ContactList;
+function mapStateToProps (state) {
+  return {
+    contacts: state.contacts,
+  };
+}
+
+const mapDispatchToProps = {
+  getContacts,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactList);

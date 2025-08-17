@@ -1,0 +1,23 @@
+export const contactsState = [
+  {
+    id: 'ILq99Ofovm4zMPQiWFkzs',
+    firstName: 'Andriy',
+    lastName: 'Koval',
+    email: 'andriy.koval93@example.com',
+    phone: '0957423618',
+  },
+  {
+    id: '3fdb',
+    firstName: 'Olena',
+    lastName: 'Shevchenko',
+    email: 'olena.shevchenko27@example.com',
+    phone: '0669815472',
+  },
+  {
+    id: 'f804',
+    firstName: 'Mykyta',
+    lastName: 'Bondarenko',
+    email: 'mykyta.bondarenko55@example.com',
+    phone: '0956134890',
+  },
+];

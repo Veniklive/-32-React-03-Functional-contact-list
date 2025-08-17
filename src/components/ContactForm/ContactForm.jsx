@@ -1,8 +1,24 @@
 import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import style from './ContactForm.module.sass';
 import PropTypes from 'prop-types';
+import api from './../../api/movie-service';
 
-function ContactForm ({ onSubmit, contact, onDelete, onNew }) {
+import { connect } from 'react-redux';
+import {
+  saveContact,
+  deleteContact,
+  changeOperationModeToAddition,
+} from '../../store/actions/contactsActions';
+
+function ContactForm ({
+  saveContact,
+  contacts,
+  contactEditId,
+  deleteContact,
+  changeOperationModeToAddition,
+}) {
+  const dispatch = useDispatch();
   const [inputContact, setInputContact] = useState({
     firstName: '',
     lastName: '',
@@ -35,29 +51,51 @@ function ContactForm ({ onSubmit, contact, onDelete, onNew }) {
 
   const onFormSubmit = event => {
     event.preventDefault();
-    onSubmit(inputContact);
     if (!inputContact.id) {
+      api
+        .post('/contacts', inputContact)
+        .then(({ data }) => saveContact(data))
+        .catch(error => console.error(error));
       resetState();
+    } else {
+      api
+        .put(`/contacts/${inputContact.id}`, inputContact)
+        .then(({ data }) => saveContact(data))
+        .catch(error => console.error(error));
     }
   };
 
   const onClickNew = event => {
     event.stopPropagation();
-    onNew();
+    changeOperationModeToAddition();
     resetState();
   };
 
-  const onDeleteInEdit = event => {
+  const deleteContactInEdit = event => {
     event.stopPropagation();
-    onDelete(inputContact.id);
+    api
+      .delete(`/contacts/${inputContact.id}`)
+      .then(({ status }) => {
+        console.log(status);
+      })
+      .catch(error => console.error(error));
+    dispatch(deleteContact(inputContact.id));
     resetState();
   };
 
   useEffect(() => {
-    if (contact && contact.id !== inputContact.id) {
+    const contact = contacts.find(contact => contact.id === contactEditId);
+    if (contact) {
       setInputContact(contact);
+    } else if (contactEditId === inputContact.id) {
+      setInputContact({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+      });
     }
-  }, [contact]);
+  }, [contacts, contactEditId]);
 
   return (
     <>
@@ -125,7 +163,7 @@ function ContactForm ({ onSubmit, contact, onDelete, onNew }) {
           <div>
             <button>Save</button>
             {inputContact.id && (
-              <button type='button' onClick={onDeleteInEdit}>
+              <button type='button' onClick={deleteContactInEdit}>
                 Delete
               </button>
             )}
@@ -137,7 +175,20 @@ function ContactForm ({ onSubmit, contact, onDelete, onNew }) {
 }
 
 ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  saveContact: PropTypes.func.isRequired,
 };
 
-export default ContactForm;
+function mapStateToProps (state) {
+  return {
+    contacts: state.contacts,
+    contactEditId: state.contactEditId,
+  };
+}
+
+const mapDispatchToProps = {
+  saveContact,
+  deleteContact,
+  changeOperationModeToAddition,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);
