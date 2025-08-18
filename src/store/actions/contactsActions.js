@@ -1,33 +1,42 @@
+import ACTION_TYPES from './actionsTypes';
+
 export const changeOperationModeToAddition = () => {
   return {
-    type: `changeOperationModeToAddition`,
+    type: ACTION_TYPES.CHANGE_OPERATION_MODE_TO_ADDITION,
   };
 };
 
 export const choiceToEdit = id => {
   return {
-    type: `choiceToEdit`,
+    type: ACTION_TYPES.CHOICE_TO_EDIT,
     payload: id,
   };
 };
 
 export const saveContact = contact => {
   return {
-    type: `saveContact`,
+    type: ACTION_TYPES.PUT_CONTACT,
+    payload: contact,
+  };
+};
+
+export const addContact = contact => {
+  return {
+    type: ACTION_TYPES.POST_CONTACT,
     payload: contact,
   };
 };
 
 export const deleteContact = id => {
   return {
-    type: `deleteContact`,
+    type: ACTION_TYPES.DELETE_CONTACT,
     payload: id,
   };
 };
 
 export const getContacts = contacts => {
   return {
-    type: `getContacts`,
+    type: ACTION_TYPES.GET_CONTACTS,
     payload: contacts,
   };
 };

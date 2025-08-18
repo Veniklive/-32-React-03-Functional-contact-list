@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import style from './ContactForm.module.sass';
 import PropTypes from 'prop-types';
 import api from './../../api/movie-service';
@@ -7,18 +6,19 @@ import api from './../../api/movie-service';
 import { connect } from 'react-redux';
 import {
   saveContact,
+  addContact,
   deleteContact,
   changeOperationModeToAddition,
 } from '../../store/actions/contactsActions';
 
 function ContactForm ({
   saveContact,
+  addContact,
   contacts,
   contactEditId,
   deleteContact,
   changeOperationModeToAddition,
 }) {
-  const dispatch = useDispatch();
   const [inputContact, setInputContact] = useState({
     firstName: '',
     lastName: '',
@@ -51,10 +51,12 @@ function ContactForm ({
 
   const onFormSubmit = event => {
     event.preventDefault();
+    console.dir(inputContact);
+
     if (!inputContact.id) {
       api
         .post('/contacts', inputContact)
-        .then(({ data }) => saveContact(data))
+        .then(({ data }) => addContact(data))
         .catch(error => console.error(error));
       resetState();
     } else {
@@ -75,25 +77,25 @@ function ContactForm ({
     event.stopPropagation();
     api
       .delete(`/contacts/${inputContact.id}`)
-      .then(({ status }) => {
-        console.log(status);
-      })
+      .then(deleteContact(inputContact.id))
       .catch(error => console.error(error));
-    dispatch(deleteContact(inputContact.id));
+
     resetState();
   };
 
   useEffect(() => {
-    const contact = contacts.find(contact => contact.id === contactEditId);
-    if (contact) {
-      setInputContact(contact);
-    } else if (contactEditId === inputContact.id) {
-      setInputContact({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-      });
+    if (contactEditId !== inputContact.id) {
+      const contact = contacts.find(contact => contact.id === contactEditId);
+      if (contact) {
+        setInputContact(contact);
+      } else {
+        setInputContact({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+        });
+      }
     }
   }, [contacts, contactEditId]);
 
@@ -180,13 +182,14 @@ ContactForm.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    contacts: state.contacts,
+    contacts: state.contactsList,
     contactEditId: state.contactEditId,
   };
 }
 
 const mapDispatchToProps = {
   saveContact,
+  addContact,
   deleteContact,
   changeOperationModeToAddition,
 };

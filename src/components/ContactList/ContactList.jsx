@@ -46,7 +46,7 @@ ContactList.defaultProps = {
 
 function mapStateToProps (state) {
   return {
-    contacts: state.contacts,
+    contacts: state.contactsList,
   };
 }
 

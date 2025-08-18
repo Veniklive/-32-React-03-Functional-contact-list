@@ -11,8 +11,10 @@ function ContactItem ({ contact, contactEditId, deleteContact, choiceToEdit }) {
   const dispatch = useDispatch();
   const onContactDelete = event => {
     event.stopPropagation();
-    api.delete(`/contacts/${contact.id}`).catch(error => console.error(error));
-    dispatch(deleteContact(contact.id));
+    api
+      .delete(`/contacts/${contact.id}`)
+      .then(deleteContact(contact.id))
+      .catch(error => console.error(error));
   };
 
   return (
