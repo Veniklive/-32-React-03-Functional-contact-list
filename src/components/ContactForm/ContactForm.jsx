@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import style from './ContactForm.module.sass';
-import PropTypes from 'prop-types';
 import api from './../../api/movie-service';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { connect } from 'react-redux';
 import {
   saveContact,
   addContact,
@@ -11,14 +10,11 @@ import {
   changeOperationModeToAddition,
 } from '../../store/actions/contactsActions';
 
-function ContactForm ({
-  saveContact,
-  addContact,
-  contacts,
-  contactEditId,
-  deleteContact,
-  changeOperationModeToAddition,
-}) {
+function ContactForm () {
+  const contacts = useSelector(state => state.contactsList);
+  const contactEditId = useSelector(state => state.contactEditId);
+
+  const dispatch = useDispatch();
   const [inputContact, setInputContact] = useState({
     firstName: '',
     lastName: '',
@@ -51,25 +47,23 @@ function ContactForm ({
 
   const onFormSubmit = event => {
     event.preventDefault();
-    console.dir(inputContact);
-
     if (!inputContact.id) {
       api
         .post('/contacts', inputContact)
-        .then(({ data }) => addContact(data))
+        .then(({ data }) => dispatch(addContact(data)))
         .catch(error => console.error(error));
       resetState();
     } else {
       api
         .put(`/contacts/${inputContact.id}`, inputContact)
-        .then(({ data }) => saveContact(data))
+        .then(({ data }) => dispatch(saveContact(data)))
         .catch(error => console.error(error));
     }
   };
 
   const onClickNew = event => {
     event.stopPropagation();
-    changeOperationModeToAddition();
+    dispatch(changeOperationModeToAddition());
     resetState();
   };
 
@@ -77,7 +71,7 @@ function ContactForm ({
     event.stopPropagation();
     api
       .delete(`/contacts/${inputContact.id}`)
-      .then(deleteContact(inputContact.id))
+      .then(dispatch(deleteContact(inputContact.id)))
       .catch(error => console.error(error));
 
     resetState();
@@ -176,22 +170,4 @@ function ContactForm ({
   );
 }
 
-ContactForm.propTypes = {
-  saveContact: PropTypes.func.isRequired,
-};
-
-function mapStateToProps (state) {
-  return {
-    contacts: state.contactsList,
-    contactEditId: state.contactEditId,
-  };
-}
-
-const mapDispatchToProps = {
-  saveContact,
-  addContact,
-  deleteContact,
-  changeOperationModeToAddition,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);
+export default ContactForm;
