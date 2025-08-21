@@ -1,10 +1,7 @@
 import style from './ContactItem.module.sass';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  deleteContact,
-  choiceToEdit,
-} from '../../store/actions/contactsActions';
-import api from '../../api/movie-service';
+import { deleteContact } from '../../store/slices/contactSlice';
+import { setEditContactId } from '../../store/slices/editContactSlice';
 
 function ContactItem ({ contact }) {
   const contactEditId = useSelector(state => state.contactEditId);
@@ -12,15 +9,12 @@ function ContactItem ({ contact }) {
   const dispatch = useDispatch();
   const onContactDelete = event => {
     event.stopPropagation();
-    api
-      .delete(`/contacts/${contact.id}`)
-      .then(dispatch(deleteContact(contact.id)))
-      .catch(error => console.error(error));
+    dispatch(deleteContact(contact.id));
   };
 
   return (
     <li
-      onDoubleClick={() => dispatch(choiceToEdit(contact.id))}
+      onDoubleClick={() => dispatch(setEditContactId(contact.id))}
       className={
         style.containerContactItem +
         ' ' +

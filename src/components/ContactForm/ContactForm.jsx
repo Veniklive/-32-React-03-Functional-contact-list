@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import style from './ContactForm.module.sass';
-import api from './../../api/movie-service';
+
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
-  saveContact,
+  changeContact,
   addContact,
   deleteContact,
-  changeOperationModeToAddition,
-} from '../../store/actions/contactsActions';
+} from '../../store/slices/contactSlice';
+import { setEditContactId } from '../../store/slices/editContactSlice';
 
 function ContactForm () {
-  const contacts = useSelector(state => state.contactsList);
+  const contacts = useSelector(state => state.contactList.contacts);
   const contactEditId = useSelector(state => state.contactEditId);
 
   const dispatch = useDispatch();
@@ -48,32 +48,22 @@ function ContactForm () {
   const onFormSubmit = event => {
     event.preventDefault();
     if (!inputContact.id) {
-      api
-        .post('/contacts', inputContact)
-        .then(({ data }) => dispatch(addContact(data)))
-        .catch(error => console.error(error));
+      dispatch(addContact(inputContact));
       resetState();
     } else {
-      api
-        .put(`/contacts/${inputContact.id}`, inputContact)
-        .then(({ data }) => dispatch(saveContact(data)))
-        .catch(error => console.error(error));
+      dispatch(changeContact(inputContact));
     }
   };
 
   const onClickNew = event => {
     event.stopPropagation();
-    dispatch(changeOperationModeToAddition());
+    dispatch(setEditContactId(''));
     resetState();
   };
 
   const deleteContactInEdit = event => {
     event.stopPropagation();
-    api
-      .delete(`/contacts/${inputContact.id}`)
-      .then(dispatch(deleteContact(inputContact.id)))
-      .catch(error => console.error(error));
-
+    dispatch(deleteContact(inputContact.id));
     resetState();
   };
 
