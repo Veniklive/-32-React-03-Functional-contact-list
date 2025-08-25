@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
 import style from './ContactForm.module.sass';
-
 import { useSelector, useDispatch } from 'react-redux';
-
+import { setEditContactId } from '../../store/slices/editContactSlice';
 import {
   changeContact,
   addContact,
   deleteContact,
 } from '../../store/slices/contactSlice';
-import { setEditContactId } from '../../store/slices/editContactSlice';
+import { Form, Field, Formik, ErrorMessage } from 'formik';
+import { CONTACT_SCHEMA } from '../../utils/validate/validationSchemas';
 
 function ContactForm () {
   const contacts = useSelector(state => state.contactList.contacts);
   const contactEditId = useSelector(state => state.contactEditId);
 
   const dispatch = useDispatch();
+
   const [inputContact, setInputContact] = useState({
     firstName: '',
     lastName: '',
@@ -31,40 +32,21 @@ function ContactForm () {
     });
   };
 
-  const onInputChange = event => {
-    setInputContact({
-      ...inputContact,
-      [event.target.name]: event.target.value,
-    });
+  const onClickNew = () => {
+    dispatch(setEditContactId(''));
   };
 
-  const onInputPressClear = event => {
-    setInputContact({
-      ...inputContact,
-      [event.target.getAttribute('name')]: '',
-    });
+  const deleteContactInEdit = values => {
+    dispatch(deleteContact(values.id));
   };
 
-  const onFormSubmit = event => {
-    event.preventDefault();
-    if (!inputContact.id) {
-      dispatch(addContact(inputContact));
+  const onFormSubmit = values => {
+    if (!values.id) {
+      dispatch(addContact(values));
       resetState();
     } else {
-      dispatch(changeContact(inputContact));
+      dispatch(changeContact(values));
     }
-  };
-
-  const onClickNew = event => {
-    event.stopPropagation();
-    dispatch(setEditContactId(''));
-    resetState();
-  };
-
-  const deleteContactInEdit = event => {
-    event.stopPropagation();
-    dispatch(deleteContact(inputContact.id));
-    resetState();
   };
 
   useEffect(() => {
@@ -73,89 +55,122 @@ function ContactForm () {
       if (contact) {
         setInputContact(contact);
       } else {
-        setInputContact({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-        });
+        resetState();
       }
     }
   }, [contacts, contactEditId]);
 
   return (
     <>
-      <form onSubmit={onFormSubmit}>
-        <div className={style.containerInputs}>
-          <div>
-            <input
-              placeholder='First name'
-              name='firstName'
-              type='text'
-              required
-              value={inputContact.firstName}
-              onChange={onInputChange}
-            />
-            <span name='firstName' onClick={onInputPressClear}>
-              X
-            </span>
-          </div>
+      <Formik
+        initialValues={inputContact}
+        enableReinitialize
+        onSubmit={onFormSubmit}
+        validationSchema={CONTACT_SCHEMA}
+      >
+        {formik => (
+          <Form>
+            <div className={style.containerInputs}>
+              <div>
+                <Field
+                  placeholder='First name'
+                  type='text'
+                  name='firstName'
+                  id='firstName'
+                />
+                <ErrorMessage name='firstName'>
+                  {msg => <div className='error'>{msg}</div>}
+                </ErrorMessage>
+                <span
+                  name='firstName'
+                  onClick={() => {
+                    formik.setFieldValue('firstName', '');
+                    formik.setFieldError('firstName', undefined);
+                    formik.setFieldTouched('firstName', false);
+                  }}
+                >
+                  X
+                </span>
+              </div>
 
-          <div>
-            <input
-              placeholder='Last name'
-              name='lastName'
-              type='text'
-              required
-              value={inputContact.lastName}
-              onChange={onInputChange}
-            />
-            <span name='lastName' onClick={onInputPressClear}>
-              X
-            </span>
-          </div>
-          <div>
-            <input
-              placeholder='Email'
-              name='email'
-              type='email'
-              required
-              value={inputContact.email}
-              onChange={onInputChange}
-            />
-            <span name='email' onClick={onInputPressClear}>
-              X
-            </span>
-          </div>
-          <div>
-            <input
-              placeholder='Phone'
-              name='phone'
-              type='tel'
-              required
-              value={inputContact.phone}
-              onChange={onInputChange}
-            />
-            <span name='phone' onClick={onInputPressClear}>
-              X
-            </span>
-          </div>
-        </div>
+              <div>
+                <Field
+                  placeholder='Last name'
+                  name='lastName'
+                  id='lastName'
+                  type='text'
+                />
+                <ErrorMessage name='lastName'>
+                  {msg => <div className='error'>{msg}</div>}
+                </ErrorMessage>
+                <span
+                  name='lastName'
+                  onClick={() => {
+                    formik.setFieldValue('lastName', '');
+                    formik.setFieldError('lastName', undefined);
+                    formik.setFieldTouched('lastName', false);
+                  }}
+                >
+                  X
+                </span>
+              </div>
 
-        <div className={style.containerButtons}>
-          <button type='button' onClick={onClickNew}>
-            New
-          </button>
-          <div>
-            <button>Save</button>
-            {inputContact.id && (
-              <button type='button' onClick={deleteContactInEdit}>
-                Delete
+              <div>
+                <Field
+                  placeholder='Email'
+                  name='email'
+                  id='email'
+                  type='email'
+                />
+                <ErrorMessage name='email'>
+                  {msg => <div className='error'>{msg}</div>}
+                </ErrorMessage>
+                <span
+                  name='email'
+                  onClick={() => {
+                    formik.setFieldValue('email', '');
+                    formik.setFieldError('email', undefined);
+                    formik.setFieldTouched('email', false);
+                  }}
+                >
+                  X
+                </span>
+              </div>
+
+              <div>
+                <Field placeholder='Phone' name='phone' id='phone' type='tel' />
+                <ErrorMessage name='phone'>
+                  {msg => <div className='error'>{msg}</div>}
+                </ErrorMessage>
+                <span
+                  name='phone'
+                  onClick={() => {
+                    formik.setFieldValue('phone', '');
+                    formik.setFieldError('phone', undefined);
+                    formik.setFieldTouched('phone', false);
+                  }}
+                >
+                  X
+                </span>
+              </div>
+            </div>
+
+            <div className={style.containerButtons}>
+              <button type='button' onClick={onClickNew}>
+                New
               </button>
-            )}
-          </div>
-        </div>
-      </form>
+              <div>
+                <button type='submit'>Save</button>
+                {inputContact.id && (
+                  <button type='button' onClick={deleteContactInEdit}>
+                    Delete
+                  </button>
+                )}
+              </div>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </>
   );
 }
