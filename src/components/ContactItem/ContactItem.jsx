@@ -2,6 +2,7 @@ import style from './ContactItem.module.sass';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteContact } from '../../store/slices/contactSlice';
 import { setEditContactId } from '../../store/slices/editContactSlice';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 function ContactItem ({ contact }) {
   const contactEditId = useSelector(state => state.contactEditId);
@@ -24,7 +25,7 @@ function ContactItem ({ contact }) {
       <p>
         {contact.firstName} {contact.lastName}
       </p>
-      <button onClick={onContactDelete}>X</button>
+      <DeleteForeverIcon onClick={onContactDelete} />
     </li>
   );
 }

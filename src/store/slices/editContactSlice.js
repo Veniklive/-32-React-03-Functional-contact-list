@@ -14,9 +14,7 @@ const editContactSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(deleteContact.fulfilled, (state, { payload }) => {
-      if (state === payload) {
-        return '';
-      }
+      return state === payload ? '' : state;
     });
   },
 });

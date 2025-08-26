@@ -7,15 +7,21 @@ import {
   addContact,
   deleteContact,
 } from '../../store/slices/contactSlice';
-import { Form, Field, Formik, ErrorMessage } from 'formik';
+import { Form, Field, Formik } from 'formik';
 import { CONTACT_SCHEMA } from '../../utils/validate/validationSchemas';
+import ClearIcon from '@mui/icons-material/Clear';
+import TextField from '@mui/material/TextField';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import Button from '@mui/material/Button';
+import { ThemeProvider } from '@mui/material/styles';
+import { coffyTheme } from '../../utils/muiTheme';
 
 function ContactForm () {
   const contacts = useSelector(state => state.contactList.contacts);
   const contactEditId = useSelector(state => state.contactEditId);
-
   const dispatch = useDispatch();
-
   const [inputContact, setInputContact] = useState({
     firstName: '',
     lastName: '',
@@ -36,8 +42,8 @@ function ContactForm () {
     dispatch(setEditContactId(''));
   };
 
-  const deleteContactInEdit = values => {
-    dispatch(deleteContact(values.id));
+  const deleteContactInEdit = () => {
+    dispatch(deleteContact(contactEditId));
   };
 
   const onFormSubmit = values => {
@@ -61,117 +67,153 @@ function ContactForm () {
   }, [contacts, contactEditId]);
 
   return (
-    <>
+    <ThemeProvider theme={coffyTheme}>
       <Formik
         initialValues={inputContact}
         enableReinitialize
         onSubmit={onFormSubmit}
         validationSchema={CONTACT_SCHEMA}
       >
-        {formik => (
-          <Form>
-            <div className={style.containerInputs}>
-              <div>
-                <Field
-                  placeholder='First name'
-                  type='text'
-                  name='firstName'
-                  id='firstName'
-                />
-                <ErrorMessage name='firstName'>
-                  {msg => <div className='error'>{msg}</div>}
-                </ErrorMessage>
-                <span
-                  name='firstName'
-                  onClick={() => {
-                    formik.setFieldValue('firstName', '');
-                    formik.setFieldError('firstName', undefined);
-                    formik.setFieldTouched('firstName', false);
-                  }}
-                >
-                  X
-                </span>
-              </div>
+        {formik => {
+          const clearInput = inputName => {
+            formik.setFieldValue(inputName, '');
+            formik.setFieldError(inputName, undefined);
+            formik.setFieldTouched(inputName, false);
+          };
+          return (
+            <>
+              <Form>
+                <div className={style.containerInputs}>
+                  <div>
+                    <Field
+                      as={TextField}
+                      variant='filled'
+                      fullWidth
+                      placeholder='First name'
+                      type='text'
+                      name='firstName'
+                      id='firstName'
+                      error={
+                        formik.touched.firstName &&
+                        Boolean(formik.errors.firstName)
+                      }
+                      helperText={
+                        formik.touched.firstName && formik.errors.firstName
+                      }
+                    />
+                    <ClearIcon
+                      name='firstName'
+                      onClick={() => {
+                        clearInput('firstName');
+                      }}
+                    />
+                  </div>
 
-              <div>
-                <Field
-                  placeholder='Last name'
-                  name='lastName'
-                  id='lastName'
-                  type='text'
-                />
-                <ErrorMessage name='lastName'>
-                  {msg => <div className='error'>{msg}</div>}
-                </ErrorMessage>
-                <span
-                  name='lastName'
-                  onClick={() => {
-                    formik.setFieldValue('lastName', '');
-                    formik.setFieldError('lastName', undefined);
-                    formik.setFieldTouched('lastName', false);
-                  }}
-                >
-                  X
-                </span>
-              </div>
+                  <div>
+                    <Field
+                      as={TextField}
+                      variant='filled'
+                      fullWidth
+                      placeholder='Last name'
+                      name='lastName'
+                      id='lastName'
+                      type='text'
+                      error={
+                        formik.touched.lastName &&
+                        Boolean(formik.errors.lastName)
+                      }
+                      helperText={
+                        formik.touched.lastName && formik.errors.lastName
+                      }
+                    />
+                    <ClearIcon
+                      name='lastName'
+                      onClick={() => {
+                        clearInput('lastName');
+                      }}
+                    />
+                  </div>
 
-              <div>
-                <Field
-                  placeholder='Email'
-                  name='email'
-                  id='email'
-                  type='email'
-                />
-                <ErrorMessage name='email'>
-                  {msg => <div className='error'>{msg}</div>}
-                </ErrorMessage>
-                <span
-                  name='email'
-                  onClick={() => {
-                    formik.setFieldValue('email', '');
-                    formik.setFieldError('email', undefined);
-                    formik.setFieldTouched('email', false);
-                  }}
-                >
-                  X
-                </span>
-              </div>
+                  <div>
+                    <Field
+                      as={TextField}
+                      variant='filled'
+                      fullWidth
+                      placeholder='Email'
+                      name='email'
+                      id='email'
+                      type='email'
+                      error={
+                        formik.touched.email && Boolean(formik.errors.email)
+                      }
+                      helperText={formik.touched.email && formik.errors.email}
+                    />
+                    <ClearIcon
+                      name='email'
+                      onClick={() => {
+                        clearInput('email');
+                      }}
+                    />
+                  </div>
 
-              <div>
-                <Field placeholder='Phone' name='phone' id='phone' type='tel' />
-                <ErrorMessage name='phone'>
-                  {msg => <div className='error'>{msg}</div>}
-                </ErrorMessage>
-                <span
-                  name='phone'
-                  onClick={() => {
-                    formik.setFieldValue('phone', '');
-                    formik.setFieldError('phone', undefined);
-                    formik.setFieldTouched('phone', false);
-                  }}
-                >
-                  X
-                </span>
-              </div>
-            </div>
+                  <div>
+                    <Field
+                      as={TextField}
+                      variant='filled'
+                      fullWidth
+                      placeholder='Phone'
+                      name='phone'
+                      id='phone'
+                      type='tel'
+                      error={
+                        formik.touched.phone && Boolean(formik.errors.phone)
+                      }
+                      helperText={formik.touched.phone && formik.errors.phone}
+                    />
+                    <ClearIcon
+                      name='phone'
+                      onClick={() => {
+                        clearInput('phone');
+                      }}
+                    />
+                  </div>
+                </div>
 
-            <div className={style.containerButtons}>
-              <button type='button' onClick={onClickNew}>
-                New
-              </button>
-              <div>
-                <button type='submit'>Save</button>
-                {inputContact.id && (
-                  <button type='button' onClick={deleteContactInEdit}>
-                    Delete
-                  </button>
-                )}
-              </div>
-            </div>
-          </Form>
-        )}
+                <div className={style.containerButtons}>
+                  <Button
+                    variant='outlined'
+                    startIcon={<NoteAddIcon />}
+                    type='button'
+                    onClick={onClickNew}
+                  >
+                    New
+                  </Button>
+                  <div>
+                    <Button
+                      variant='outlined'
+                      startIcon={<SaveIcon />}
+                      type='submit'
+                    >
+                      Save
+                    </Button>
+                    {inputContact.id && (
+                      <Button
+                        variant='outlined'
+                        startIcon={<DeleteIcon />}
+                        type='button'
+                        onClick={deleteContactInEdit}
+                      >
+                        Delete
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </Form>
+            </>
+          );
+        }}
       </Formik>
-    </>
+    </ThemeProvider>
   );
 }
 

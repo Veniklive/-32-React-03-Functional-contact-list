@@ -9,10 +9,12 @@ export const CONTACT_SCHEMA = Yup.object().shape({
     .min(2, 'Too short')
     .max(64, 'Too long')
     .required('Last name is required field'),
-  email: Yup.string().email().required('Email is required field'),
-  phone: Yup.string('Phone number is required field')
-    .matches(/^[0-9]+$/)
+  email: Yup.string()
+    .email('Email must be like "test@test.com"')
+    .required('Email is required field'),
+  phone: Yup.string()
+    .matches(/^[0-9]+$/, 'Number must be like "0987654321"')
     .min(10, 'Too short')
     .max(15, 'Too long')
-    .required(),
+    .required('Phone number is required field'),
 });
