@@ -17,8 +17,7 @@ export const coffyTheme = createTheme({
       contrastText: '#fff',
     },
     secondary: {
-      main: '#f5deb3',
-      contrastText: '#3b2a20',
+      main: '#974d19ff',
     },
   },
 });
