@@ -1,8 +1,10 @@
-import ContactItem from '../ContactItem/ContactItem';
-import style from './ContactList.module.sass';
 import { useEffect } from 'react';
+
+import ContactItem from '../ContactItem/ContactItem';
 import { getContacts } from '../../store/slices/contactSlice';
 import { useDispatch, useSelector } from 'react-redux';
+
+import style from './ContactList.module.sass';
 
 function ContactList () {
   const contacts = useSelector(state => state.contactList.contacts);
