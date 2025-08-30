@@ -187,6 +187,13 @@ function ContactForm () {
                     variant='outlined'
                     startIcon={<SaveIcon />}
                     type='submit'
+                    disabled={
+                      !formik.isValid ||
+                      formik.errors.firstName ||
+                      formik.errors.lastName ||
+                      formik.errors.phone ||
+                      formik.errors.email
+                    }
                   >
                     Save
                   </Button>
